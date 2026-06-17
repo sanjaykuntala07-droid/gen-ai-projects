@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual Environment
+venv/
+env/
+.venv/
+.env
+
+# Database files
+*.db
+*.sqlite3
+
+# PDF outputs (generated reports)
+*_Report.pdf
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Secrets
+.env
+secrets.json
