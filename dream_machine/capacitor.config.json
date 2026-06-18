@@ -1,0 +1,26 @@
+{
+  "appId": "com.dreammachine.app",
+  "appName": "Dream Machine",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://YOUR_PRODUCTION_URL",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "launchAutoHide": true,
+      "backgroundColor": "#07070F",
+      "androidSpinnerStyle": "large",
+      "iosSpinnerStyle": "small",
+      "spinnerColor": "#5C6BFF",
+      "showSpinner": true
+    }
+  }
+}

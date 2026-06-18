@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#07070F" />
+  <title>Dream Machine</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #07070F;
+      color: #EEEEF6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      text-align: center;
+    }
+    .logo {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+    .app-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: #EEEEF6;
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
+    }
+    .tagline {
+      font-size: 13px;
+      color: #6B6B8A;
+      margin-bottom: 40px;
+    }
+    .spinner {
+      border: 3px solid rgba(92,107,255,0.15);
+      border-top: 3px solid #5C6BFF;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .status {
+      font-size: 14px;
+      color: #6B6B8A;
+      margin-bottom: 8px;
+    }
+    .error-box {
+      display: none;
+      background: rgba(255,80,80,0.08);
+      border: 1px solid rgba(255,80,80,0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      max-width: 320px;
+      margin-top: 16px;
+    }
+    .error-box h3 { color: #FF6B6B; font-size: 15px; margin-bottom: 8px; }
+    .error-box p { font-size: 13px; color: #9A9AB0; line-height: 1.5; }
+    .retry-btn {
+      margin-top: 16px;
+      background: #5C6BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+    }
+    .retry-btn:active { opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <div class="logo">✦</div>
+  <div class="app-name">Dream Machine</div>
+  <div class="tagline">AI Innovation Platform</div>
+
+  <div class="spinner" id="spinner"></div>
+  <div class="status" id="status">Connecting...</div>
+
+  <div class="error-box" id="error-box">
+    <h3>⚡ Could not connect</h3>
+    <p>Dream Machine server is unreachable. Please check your internet connection and try again.</p>
+    <button class="retry-btn" onclick="connect()">Retry Connection</button>
+  </div>
+
+  <script>
+    // ── Replace this URL after deploying to Streamlit Cloud ──────────────────
+    const APP_URL = "https://YOUR_PRODUCTION_URL";
+    // ─────────────────────────────────────────────────────────────────────────
+
+    let retryCount = 0;
+    const MAX_RETRIES = 3;
+
+    function showError() {
+      document.getElementById("spinner").style.display = "none";
+      document.getElementById("status").style.display = "none";
+      document.getElementById("error-box").style.display = "block";
+    }
+
+    function connect() {
+      document.getElementById("spinner").style.display = "block";
+      document.getElementById("status").style.display = "block";
+      document.getElementById("error-box").style.display = "none";
+      document.getElementById("status").textContent = "Connecting...";
+
+      // Probe the server before redirecting
+      fetch(APP_URL, { method: "HEAD", mode: "no-cors" })
+        .then(() => {
+          document.getElementById("status").textContent = "Connected! Loading...";
+          window.location.href = APP_URL;
+        })
+        .catch(() => {
+          retryCount++;
+          if (retryCount < MAX_RETRIES) {
+            document.getElementById("status").textContent = `Retrying (${retryCount}/${MAX_RETRIES})...`;
+            setTimeout(connect, 3000);
+          } else {
+            showError();
+          }
+        });
+    }
+
+    // Start connecting on load
+    connect();
+  </script>
+</body>
+</html>
+

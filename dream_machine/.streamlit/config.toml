@@ -1,0 +1,26 @@
+[theme]
+base = "dark"
+backgroundColor = "#07070F"
+secondaryBackgroundColor = "#0C0C1A"
+primaryColor = "#5C6BFF"
+textColor = "#EEEEF6"
+font = "sans serif"
+
+[server]
+headless = true
+port = 8505
+enableCORS = false
+enableXsrfProtection = false
+maxUploadSize = 50
+
+[browser]
+gatherUsageStats = false
+# serverAddress is blank for cloud deployment — the platform handles routing
+
+[runner]
+magicEnabled = false
+fastReruns = true
+
+[client]
+showErrorDetails = false
+toolbarMode = "minimal"

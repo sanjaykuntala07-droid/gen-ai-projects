@@ -1,0 +1,19 @@
+{
+  "name": "dream-machine-mobile",
+  "version": "1.0.0",
+  "description": "Capacitor mobile wrapper for Dream Machine",
+  "scripts": {
+    "mobile:init": "npx cap init \"Dream Machine\" \"com.dreammachine.app\" --web-dir=www",
+    "mobile:add-android": "npx cap add android",
+    "mobile:add-ios": "npx cap add ios",
+    "mobile:sync": "npx cap sync",
+    "mobile:open-android": "npx cap open android",
+    "mobile:open-ios": "npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^5.0.0",
+    "@capacitor/cli": "^5.0.0",
+    "@capacitor/core": "^5.0.0",
+    "@capacitor/ios": "^5.0.0"
+  }
+}
