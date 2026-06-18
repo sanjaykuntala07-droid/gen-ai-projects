@@ -7,8 +7,10 @@ import json
 import re
 import base64
 from functools import lru_cache
-from google import genai
-from google.genai.errors import APIError
+try:
+    from google import genai
+except ImportError:
+    import google.generativeai as genai  # fallback
 from dotenv import load_dotenv
 
 load_dotenv()
