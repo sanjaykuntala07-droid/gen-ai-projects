@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from components.styles import inject_styles
 from components.db import init_db, get_blueprint, list_blueprints
-from components.gemini_client import IDEA_TYPE_ICONS
+from components.gemini_client import IDEA_TYPE_ICONS, generate_blueprint_comparison
 
 st.set_page_config(
     page_title="Compare Blueprints — Dream Machine",
@@ -137,6 +137,42 @@ with card_b_col:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
+import re
+import html
+
+def format_markdown_to_html(text: str) -> str:
+    """Convert basic Markdown formatting to clean HTML."""
+    if not text:
+        return ""
+    escaped = html.escape(text)
+    escaped = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', escaped)
+    
+    lines = escaped.split('\n')
+    in_list = False
+    new_lines = []
+    
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith('- ') or stripped.startswith('* '):
+            content = stripped[2:]
+            if not in_list:
+                new_lines.append('<ul style="margin: 4px 0 12px 16px; padding-left: 0; list-style-type: disc;">')
+                in_list = True
+            new_lines.append(f'<li style="margin-bottom: 6px;">{content}</li>')
+        else:
+            if in_list:
+                new_lines.append('</ul>')
+                in_list = False
+            if stripped:
+                new_lines.append(f'<div style="margin-bottom: 8px;">{line}</div>')
+            else:
+                new_lines.append('<br>')
+            
+    if in_list:
+        new_lines.append('</ul>')
+        
+    return "\n".join(new_lines)
+
 # ── Section Comparison ────────────────────────────────────────────────────────
 SECTION_META = [
     ("executive_summary", "📋 Executive Summary"),
@@ -189,16 +225,18 @@ for key, title in sections_to_show:
 
     with col_a:
         if content_a:
+            formatted_a = format_markdown_to_html(content_a)
             st.markdown(f"""
             <div style="background:rgba(92,107,255,0.04);border:1px solid rgba(92,107,255,0.15);
                         border-left:3px solid #5C6BFF;border-radius:0 10px 10px 0;
-                        padding:16px;min-height:80px;">
+                        padding:16px;min-height:120px;max-height:380px;overflow-y:auto;">
                 <div style="font-size:10px;color:#5C6BFF;font-family:'JetBrains Mono',monospace;
-                            text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">
+                            text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;
+                            position:sticky;top:-16px;background:#07070F;padding:4px 0;z-index:1;">
                     Blueprint A
                 </div>
                 <div style="font-size:13px;color:#C0C0D8;line-height:1.7;">
-                    {content_a[:600]}{'...' if len(content_a) > 600 else ''}
+                    {formatted_a}
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -206,21 +244,25 @@ for key, title in sections_to_show:
             st.markdown("""
             <div style="background:rgba(255,255,255,0.02);border:1px dashed rgba(92,107,255,0.12);
                         border-radius:10px;padding:16px;text-align:center;color:#3A3A5A;
-                        font-size:13px;">Not generated yet</div>
+                        font-size:13px;min-height:120px;display:flex;align-items:center;justify-content:center;">
+                Not generated yet
+            </div>
             """, unsafe_allow_html=True)
 
     with col_b:
         if content_b:
+            formatted_b = format_markdown_to_html(content_b)
             st.markdown(f"""
             <div style="background:rgba(0,245,212,0.04);border:1px solid rgba(0,245,212,0.15);
                         border-left:3px solid #00F5D4;border-radius:0 10px 10px 0;
-                        padding:16px;min-height:80px;">
+                        padding:16px;min-height:120px;max-height:380px;overflow-y:auto;">
                 <div style="font-size:10px;color:#00F5D4;font-family:'JetBrains Mono',monospace;
-                            text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">
+                            text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;
+                            position:sticky;top:-16px;background:#07070F;padding:4px 0;z-index:1;">
                     Blueprint B
                 </div>
                 <div style="font-size:13px;color:#C0C0D8;line-height:1.7;">
-                    {content_b[:600]}{'...' if len(content_b) > 600 else ''}
+                    {formatted_b}
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -228,8 +270,74 @@ for key, title in sections_to_show:
             st.markdown("""
             <div style="background:rgba(255,255,255,0.02);border:1px dashed rgba(0,245,212,0.12);
                         border-radius:10px;padding:16px;text-align:center;color:#3A3A5A;
-                        font-size:13px;">Not generated yet</div>
+                        font-size:13px;min-height:120px;display:flex;align-items:center;justify-content:center;">
+                Not generated yet
+            </div>
             """, unsafe_allow_html=True)
+
+# ── Answers Comparison ────────────────────────────────────────────────────────
+answers_a = bp_a.get("answers", {})
+answers_b = bp_b.get("answers", {})
+all_questions = list(set(list(answers_a.keys()) + list(answers_b.keys())))
+
+if all_questions:
+    st.markdown("<br>", unsafe_allow_html=True)
+    with st.expander("⚖️ Compare Discovery Q&A", expanded=False):
+        for q in all_questions:
+            ans_a = answers_a.get(q, "—")
+            ans_b = answers_b.get(q, "—")
+            
+            st.markdown(f"""
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;
+                        color:#E8E8F0;margin-top:12px;margin-bottom:6px;">
+                💡 {q}
+            </div>
+            """, unsafe_allow_html=True)
+            
+            qa_col_a, qa_col_b = st.columns(2)
+            with qa_col_a:
+                st.markdown(f"""
+                <div style="background:rgba(92,107,255,0.03);border-left:2px solid #5C6BFF;
+                            padding:10px 14px;font-size:13px;color:#A0A0BC;border-radius:0 6px 6px 0;">
+                    <strong>Blueprint A:</strong> {ans_a}
+                </div>
+                """, unsafe_allow_html=True)
+            with qa_col_b:
+                st.markdown(f"""
+                <div style="background:rgba(0,245,212,0.03);border-left:2px solid #00F5D4;
+                            padding:10px 14px;font-size:13px;color:#A0A0BC;border-radius:0 6px 6px 0;">
+                    <strong>Blueprint B:</strong> {ans_b}
+                </div>
+                """, unsafe_allow_html=True)
+        st.write("")
+
+# ── AI Strategic Analysis ──────────────────────────────────────────────────────
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown('<div class="section-tag">AI Strategic Intelligence</div>', unsafe_allow_html=True)
+
+ai_cmp_key = f"ai_cmp_{bid_a}_{bid_b}"
+
+# Generate button
+if st.button("✦ Generate AI Comparative Analysis", type="primary", use_container_width=True, key="gen_ai_cmp_btn"):
+    with st.spinner("Analyzing synergies, competitive positioning, and market viability of both concepts..."):
+        ai_report = generate_blueprint_comparison(bp_a, bp_b)
+        st.session_state[ai_cmp_key] = ai_report
+    st.toast("AI Strategic Comparison ready! ✦")
+
+if ai_cmp_key in st.session_state:
+    report = st.session_state[ai_cmp_key]
+    st.markdown(f"""
+    <div style="background:rgba(92,107,255,0.03);border:1px solid rgba(92,107,255,0.18);
+                box-shadow: 0 0 24px rgba(92,107,255,0.08);
+                border-radius:12px;padding:24px;margin-top:16px;margin-bottom:24px;">
+        <div style="font-size:11px;color:#5C6BFF;font-family:'JetBrains Mono',monospace;
+                    text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;
+                    border-bottom:1px solid rgba(92,107,255,0.15);padding-bottom:8px;">
+            ✦ AI Strategic Synthesis Report
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown(report)
 
 # ── Quick Stats Comparison ────────────────────────────────────────────────────
 st.divider()

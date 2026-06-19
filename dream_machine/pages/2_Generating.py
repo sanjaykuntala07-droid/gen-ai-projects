@@ -219,16 +219,28 @@ if not st.session_state.generation_done:
     try:
         ai_title = generate_title(idea, idea_type)
         update_blueprint_title(bid, ai_title)
-    except Exception:
-        pass
+    except Exception as e:
+        import logging
+        logging.error(f"Error generating AI title: {e}")
 
     # Generate mockup
     progress_text.markdown('<div style="font-size:12px;color:#00F5D4;text-align:center;margin-top:8px;">✦ Generating interface mockup...</div>', unsafe_allow_html=True)
     try:
         mockup_html = generate_mockup(idea, idea_type, answers)
         update_blueprint_mockup(bid, mockup_html)
-    except Exception:
-        pass
+    except Exception as e:
+        import logging
+        logging.error(f"Error generating mockup HTML: {e}")
+        fallback_html = f"""
+        <div style="font-family:sans-serif; text-align:center; padding:100px; color:#6B6B8A; background:#0C0C1A; height:100%;">
+            <h3>Mockup Generation Unavailable</h3>
+            <p>We encountered an issue generating the interactive mockup: {e}</p>
+        </div>
+        """
+        try:
+            update_blueprint_mockup(bid, fallback_html)
+        except Exception:
+            pass
 
     st.session_state.generation_done = True
     overall_progress.progress(1.0)

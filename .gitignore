@@ -37,3 +37,16 @@ build/
 # Secrets
 .env
 secrets.json
+
+# Node / Capacitor
+node_modules/
+dream_machine/node_modules/
+
+# Android build outputs
+dream_machine/android/build/
+dream_machine/android/app/build/
+dream_machine/android/.gradle/
+dream_machine/android/local.properties
+dream_machine/android/*.jks
+dream_machine/android/*.keystore
+dream_machine/android/keystore.properties

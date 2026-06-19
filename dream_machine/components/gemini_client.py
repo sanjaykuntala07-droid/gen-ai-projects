@@ -789,3 +789,56 @@ def transcribe_audio_bytes(audio_bytes: bytes, mime_type: str = "audio/wav") -> 
         return resp.text.strip()
     except Exception as e:
         return f"[Transcription failed: {e}]"
+
+
+# ──────────────────────────────────────────────
+# BLUEPRINT COMPARISON
+# ──────────────────────────────────────────────
+
+def generate_blueprint_comparison(bp_a: dict, bp_b: dict) -> str:
+    """Generate an AI-powered comparative analysis between two blueprints."""
+    # Build a summary of sections for both blueprints
+    sections_a = bp_a.get("sections", {})
+    sections_b = bp_b.get("sections", {})
+    
+    sections_summary_a = "\n".join([f"- **{k.replace('_',' ').title()}**: {v[:300]}..." for k, v in sections_a.items() if v])
+    sections_summary_b = "\n".join([f"- **{k.replace('_',' ').title()}**: {v[:300]}..." for k, v in sections_b.items() if v])
+
+    prompt = f"""You are a senior product strategist and venture capitalist.
+Analyze and compare the following two product/business blueprints side-by-side.
+
+BLUEPRINT A:
+Title: {bp_a.get('title')}
+Type: {bp_a.get('idea_type')}
+Description: {bp_a.get('idea')}
+Key Sections:
+{sections_summary_a}
+
+BLUEPRINT B:
+Title: {bp_b.get('title')}
+Type: {bp_b.get('idea_type')}
+Description: {bp_b.get('idea')}
+Key Sections:
+{sections_summary_b}
+
+Write a detailed, structured comparative report in Markdown.
+The report MUST contain:
+1. 📊 Executive Comparison Matrix (combining target users, business model, and differentiator)
+2. ⚔️ Competitive & Market Positioning (if both products entered the same space, how would they fare? What are their key differences?)
+3. 🤝 Synergies & Potential Merger (could these ideas be combined? How would a merged product look?)
+4. ⚖️ Strategic Verdict (which idea seems more viable/scalable, and what are the immediate next steps for both?)
+
+Keep the tone objective, analytical, and highly strategic. Avoid generic statements; refer directly to the details of both ideas.
+Return the output in Markdown format. Use emojis and bold headers to make it look premium and readable."""
+
+    try:
+        client = _get_client()
+        resp = client.models.generate_content(
+            model=MODEL,
+            contents=prompt,
+            config={"temperature": 0.4, "max_output_tokens": 2048}
+        )
+        return resp.text.strip()
+    except Exception as e:
+        return f"### Comparative Analysis Failed\nAn error occurred while generating the AI comparison: {e}"
+

@@ -199,7 +199,7 @@ with col_side:
                 st.switch_page("pages/3_Blueprint.py")
 
 # ── Stats Bar ─────────────────────────────────────────────────────────────────
-total_bps = len(list_blueprints(limit=1000))
+total_bps = len(list_blueprints(limit=1000, all_users=True))
 st.markdown(f"""
 <div class="stats-bar">
     <div class="stat-item">
