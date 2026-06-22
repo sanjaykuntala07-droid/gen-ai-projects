@@ -4,8 +4,7 @@
   "webDir": "www",
   "bundledWebRuntime": false,
   "server": {
-    "url": "https://sanjaykuntala07-droid-gen-ai-projects-dream-machineapp-hqvwvv.streamlit.app",
-    "cleartext": false
+    "cleartext": true
   },
   "android": {
     "allowMixedContent": false,

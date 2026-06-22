@@ -842,3 +842,27 @@ Return the output in Markdown format. Use emojis and bold headers to make it loo
     except Exception as e:
         return f"### Comparative Analysis Failed\nAn error occurred while generating the AI comparison: {e}"
 
+
+def generate_blueprint_section(section_key: str, context: str):
+    """Generator that streams text chunks for a blueprint section using raw context (used by FastAPI)."""
+    prompt = f"""You are an expert product strategist, startup advisor, and technical architect.
+Generate the {section_key.replace('_', ' ').title()} section for this product blueprint.
+
+{context}
+
+INSTRUCTIONS:
+{SECTION_PROMPTS.get(section_key, "Provide a detailed, actionable analysis.")}
+
+Be specific to this idea — not generic advice. Write as if you know this product deeply.
+Use markdown formatting for structure. Be bold and visionary."""
+
+    client = _get_client()
+    for chunk in client.models.generate_content_stream(
+        model=MODEL,
+        contents=prompt,
+        config={"temperature": 0.7}
+    ):
+        if chunk.text:
+            yield chunk.text
+
+

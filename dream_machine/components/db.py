@@ -844,3 +844,106 @@ def delete_reminder(rid: str):
     conn.execute("DELETE FROM reminders WHERE id = ?", (rid,))
     conn.commit()
     conn.close()
+
+
+# ─────────────────────────────────────────────
+# API COMPATIBILITY HELPERS
+# ─────────────────────────────────────────────
+
+def save_blueprint(blueprint_id: str, idea: str, idea_type: str, answers: dict, user_name: str = "User") -> str:
+    """Create a blueprint record with a specific ID (used by FastAPI streaming)."""
+    bid = blueprint_id
+    now = datetime.utcnow().isoformat()
+    uid = get_current_user_id()
+    title = idea[:60] + "..." if len(idea) > 60 else idea
+
+    conn = get_conn()
+    c = conn.cursor()
+
+    # Fetch/Create idea type mapping ID
+    c.execute("SELECT id FROM idea_types WHERE name=?", (idea_type,))
+    it_row = c.fetchone()
+    if it_row:
+        idea_type_id = it_row[0]
+    else:
+        c.execute("INSERT INTO idea_types (name) VALUES (?)", (idea_type,))
+        idea_type_id = c.lastrowid
+
+    # Insert main metadata
+    c.execute(
+        """INSERT INTO blueprints
+           (id, user_id, idea_type_id, title, idea, created_at, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?)""",
+        (bid, uid, idea_type_id, title, idea, now, now)
+    )
+
+    # Insert answers
+    for seq, (question, answer) in enumerate(answers.items()):
+        c.execute(
+            """INSERT INTO blueprint_answers (blueprint_id, question, answer, seq)
+               VALUES (?, ?, ?, ?)""",
+            (bid, question, str(answer), seq)
+        )
+
+    conn.commit()
+    conn.close()
+    return bid
+
+
+def update_blueprint_section(bid: str, section_key: str, content: str):
+    """Save/update a single section associated with a blueprint."""
+    now = datetime.utcnow().isoformat()
+    conn = get_conn()
+    c = conn.cursor()
+    c.execute(
+        """INSERT INTO blueprint_sections (blueprint_id, section_key, content, generated_at)
+           VALUES (?, ?, ?, ?)
+           ON CONFLICT(blueprint_id, section_key) DO UPDATE SET
+           content=excluded.content, generated_at=excluded.generated_at""",
+        (bid, section_key, content, now)
+    )
+    c.execute("UPDATE blueprints SET updated_at=? WHERE id=?", (now, bid))
+    conn.commit()
+    conn.close()
+
+
+def add_vote(blueprint_id: str, section_key: str, vote: int):
+    """Add a vote (upvote/downvote) to a section. For now, maps to blueprint star or is a no-op."""
+    if section_key == "global" or not section_key:
+        star_blueprint(blueprint_id)
+
+
+def get_votes(blueprint_id: str, section_key: str) -> int:
+    """Get the vote count for a section."""
+    conn = get_conn()
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM gallery_votes WHERE blueprint_id=?", (blueprint_id,))
+    cnt = c.fetchone()[0]
+    conn.close()
+    return cnt
+
+
+def get_stats(all_users: bool = True) -> dict:
+    """Get aggregate statistics for blueprints, users, and sections."""
+    conn = get_conn()
+    c = conn.cursor()
+    
+    # Total blueprints
+    c.execute("SELECT COUNT(*) FROM blueprints")
+    total_blueprints = c.fetchone()[0]
+    
+    # Total users
+    c.execute("SELECT COUNT(*) FROM users")
+    total_users = c.fetchone()[0]
+    
+    # Total sections
+    c.execute("SELECT COUNT(*) FROM blueprint_sections")
+    total_sections = c.fetchone()[0]
+    
+    conn.close()
+    return {
+        "total_blueprints": total_blueprints,
+        "total_users": total_users,
+        "total_sections": total_sections
+    }
+
