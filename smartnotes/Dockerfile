@@ -35,7 +35,8 @@ RUN npm ci --omit=dev
 COPY --from=builder /usr/src/app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /usr/src/app/node_modules/@prisma/client ./node_modules/@prisma/client
 COPY --from=builder /usr/src/app/apps/api/prisma ./apps/api/prisma
-COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/apps/api/dist ./apps/api/dist
+COPY --from=builder /usr/src/app/packages/shared/dist ./packages/shared/dist
 
 # Create a folder for SQLite database persistent storage
 RUN mkdir -p /data
@@ -47,4 +48,4 @@ ENV PORT=3000
 ENV DATABASE_URL="file:/data/smartnotes.db"
 
 # Run Prisma migrations and start the backend
-CMD npx prisma migrate deploy --schema=apps/api/prisma/schema.prisma && node dist/apps/api/main.js
+CMD npx prisma migrate deploy --schema=apps/api/prisma/schema.prisma && node apps/api/dist/main.js
