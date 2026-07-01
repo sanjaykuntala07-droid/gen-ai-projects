@@ -1,0 +1,28 @@
+{
+  "name": "@smartnotes/source",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "dev:api": "nx run api:serve",
+    "dev:web": "nx run web:dev",
+    "dev": "nx run-many --target=serve,dev --projects=api,web --parallel",
+    "build": "nx run-many --target=build --all",
+    "lint": "nx run-many --target=lint --all",
+    "typecheck": "nx run-many --target=typecheck --all",
+    "test": "nx run-many --target=test --all",
+    "prisma:generate": "npx prisma generate --schema=apps/api/prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate dev --schema=apps/api/prisma/schema.prisma",
+    "prisma:studio": "npx prisma studio --schema=apps/api/prisma/schema.prisma"
+  },
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "@nx/js": "23.0.1",
+    "nx": "23.0.1",
+    "typescript": "^5.5.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

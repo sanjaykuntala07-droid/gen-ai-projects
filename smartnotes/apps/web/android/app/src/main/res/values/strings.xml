@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SmartNotes</string>
+    <string name="title_activity_main">SmartNotes</string>
+    <string name="package_name">com.sanjaykuntala.smartnotes</string>
+    <string name="custom_url_scheme">com.sanjaykuntala.smartnotes</string>
+</resources>
