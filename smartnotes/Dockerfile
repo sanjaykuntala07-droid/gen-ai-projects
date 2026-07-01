@@ -27,9 +27,9 @@ FROM node:20-alpine AS runner
 
 WORKDIR /usr/src/app
 
-# Copy built bundles and dependencies
+# Copy pre-installed node_modules and package config
+COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY package*.json ./
-RUN npm ci --omit=dev
 
 # Copy generated Prisma Client, Schema, and Migration folder
 COPY --from=builder /usr/src/app/node_modules/.prisma ./node_modules/.prisma
