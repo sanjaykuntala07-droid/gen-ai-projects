@@ -48,4 +48,4 @@ ENV PORT=3000
 ENV DATABASE_URL="file:/data/smartnotes.db"
 
 # Run Prisma migrations and start the backend
-CMD npx prisma migrate deploy --schema=apps/api/prisma/schema.prisma && node apps/api/dist/main.js
+CMD ./node_modules/.bin/prisma migrate deploy --schema=apps/api/prisma/schema.prisma && node apps/api/dist/main.js
