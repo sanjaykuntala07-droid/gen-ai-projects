@@ -18,9 +18,9 @@ RUN npm ci
 # Generate Prisma Client
 RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
 
-# Build the shared packages and the API
-RUN npx nx build shared
-RUN npx nx build api
+# Build the shared packages and the API directly (bypassing Nx cache)
+RUN npm run build --workspace=packages/shared
+RUN npm run build --workspace=apps/api
 
 # Production Stage
 FROM node:20-alpine AS runner
