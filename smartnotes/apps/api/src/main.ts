@@ -34,7 +34,12 @@ async function bootstrap() {
     exclude: ['health'],
   });
 
-  await app.listen(port);
+  // Root route for simple verification
+  app.getHttpAdapter().get('/', (req, res) => {
+    res.send('SmartNotes API is running');
+  });
+
+  await app.listen(port, '0.0.0.0');
   console.log(`🚀 SmartNotes API running on http://localhost:${port}`);
 }
 

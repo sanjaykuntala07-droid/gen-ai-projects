@@ -45,9 +45,12 @@ services:
     dockerContext: smartnotes
     region: ohio
     plan: free
+    dockerBuildArgs:
+      - key: VITE_API_URL
+        value: https://smartnotes-api.onrender.com/api # Direct URL
     envVars:
       - key: VITE_API_URL
-        sync: false
+        value: https://smartnotes-api.onrender.com/api
 
   # ----------------------------------------------------------------------------
   # Redis
