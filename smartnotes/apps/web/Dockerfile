@@ -20,7 +20,7 @@ RUN npx nx build web
 # Stage 3: Serve with nginx
 FROM nginx:alpine AS runner
 
-COPY --from=builder /app/dist/apps/web /usr/share/nginx/html
+COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 
 # Nginx config for SPA routing
 RUN echo 'server { \

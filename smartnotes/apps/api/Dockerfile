@@ -24,8 +24,8 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy built artifacts from the Nx dist folder
-COPY --from=builder /app/dist/apps/api ./dist
+# Copy built artifacts from the app's dist folder
+COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/prisma ./prisma
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/api/package.json ./package.json
