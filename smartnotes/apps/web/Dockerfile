@@ -9,7 +9,7 @@ WORKDIR /app
 # Copy all files for build
 COPY . .
 
-# Install all dependencies (including dev)
+# Install all dependencies
 RUN npm install
 
 # Build the workspace
@@ -21,7 +21,7 @@ FROM nginx:alpine AS runner
 
 COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 
-# Nginx config for SPA routing
+# Nginx config for SPA routing - using variable for proxy_pass to avoid crash if host is not yet resolvable
 RUN echo 'server { \
   listen 80; \
   location / { \
@@ -29,14 +29,18 @@ RUN echo 'server { \
     try_files $uri $uri/ /index.html; \
   } \
   location /api { \
-    proxy_pass http://smartnotes-api:3000; \
+    resolver 127.0.0.11 valid=30s; \
+    set $api_service smartnotes-api; \
+    proxy_pass http://$api_service:3000; \
     proxy_http_version 1.1; \
     proxy_set_header Upgrade $http_upgrade; \
     proxy_set_header Connection "upgrade"; \
     proxy_set_header Host $host; \
   } \
   location /health { \
-    proxy_pass http://smartnotes-api:3000; \
+    resolver 127.0.0.11 valid=30s; \
+    set $api_service smartnotes-api; \
+    proxy_pass http://$api_service:3000; \
   } \
 }' > /etc/nginx/conf.d/default.conf
 
