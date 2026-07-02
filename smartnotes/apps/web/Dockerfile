@@ -1,27 +1,22 @@
 # ============================================
-# SmartNotes Web — Multi-stage Dockerfile
+# SmartNotes Web — Build and Serve
 # ============================================
 
-# Stage 1: Install dependencies
-FROM node:22-alpine AS deps
-WORKDIR /app
-COPY package.json package-lock.json ./
-COPY apps/api/package.json ./apps/api/
-COPY apps/web/package.json ./apps/web/
-COPY packages/shared/package.json ./packages/shared/
-RUN npm install
-
-# Stage 2: Build
+# Stage 1: Build
 FROM node:22-alpine AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+
+# Copy all files for build
 COPY . .
-# Build shared library first
+
+# Install all dependencies (including dev)
+RUN npm install
+
+# Build the workspace
 RUN cd packages/shared && npm run build
-# Build web app
 RUN cd apps/web && npm run build
 
-# Stage 3: Serve with nginx
+# Stage 2: Serve with nginx
 FROM nginx:alpine AS runner
 
 COPY --from=builder /app/apps/web/dist /usr/share/nginx/html

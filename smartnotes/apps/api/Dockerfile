@@ -1,35 +1,32 @@
 # ============================================
-# SmartNotes API — Multi-stage Dockerfile
+# SmartNotes API — Build and Run
 # ============================================
 
-# Stage 1: Install dependencies
-FROM node:22-alpine AS deps
-WORKDIR /app
-COPY package.json package-lock.json ./
-COPY apps/api/package.json ./apps/api/
-COPY apps/web/package.json ./apps/web/
-COPY packages/shared/package.json ./packages/shared/
-RUN npm install
-
-# Stage 2: Build
+# Stage 1: Build
 FROM node:22-alpine AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+
+# Copy all files for build
 COPY . .
-# Build shared library first
+
+# Install all dependencies
+RUN npm install
+
+# Build the workspace
 RUN cd packages/shared && npm run build
-# Generate Prisma Client
 RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
-# Build API
 RUN cd apps/api && npm run build
 
-# Stage 3: Production
+# Prune dev dependencies for the final image
+RUN npm prune --production
+
+# Stage 2: Production Runner
 FROM node:22-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy built artifacts
+# Copy built artifacts and production node_modules
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/prisma ./prisma
 COPY --from=builder /app/node_modules ./node_modules
