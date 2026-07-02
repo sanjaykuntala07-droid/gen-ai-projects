@@ -9,7 +9,7 @@ COPY package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/web/package.json ./apps/web/
 COPY packages/shared/package.json ./packages/shared/
-RUN npm ci
+RUN npm ci --include=dev
 
 # Stage 2: Build
 FROM node:22-alpine AS builder
