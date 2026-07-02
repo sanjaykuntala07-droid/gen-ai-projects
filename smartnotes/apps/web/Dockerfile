@@ -8,20 +8,19 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/shared/package.json ./packages/shared/
-RUN npm ci --workspace=@smartnotes/web --workspace=@smartnotes/shared
+RUN npm ci
 
 # Stage 2: Build
 FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
 COPY . .
-RUN cd apps/web && npx vite build
+RUN npx nx build web
 
 # Stage 3: Serve with nginx
 FROM nginx:alpine AS runner
 
-COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
+COPY --from=builder /app/dist/apps/web /usr/share/nginx/html
 
 # Nginx config for SPA routing
 RUN echo 'server { \
