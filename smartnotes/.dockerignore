@@ -1,0 +1,11 @@
+node_modules
+dist
+.nx/cache
+*.tsbuildinfo
+.git
+.vscode
+.github
+apps/api/dist
+apps/web/dist
+apps/web/dist-node
+packages/shared/dist
