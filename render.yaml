@@ -5,8 +5,8 @@ services:
   - type: web
     name: smartnotes-api
     env: docker
-    dockerfilePath: apps/api/Dockerfile
-    dockerContext: .
+    dockerfilePath: smartnotes/apps/api/Dockerfile
+    dockerContext: smartnotes
     region: ohio # USA (us-east-2)
     plan: free
     envVars:
@@ -44,8 +44,8 @@ services:
   - type: web
     name: smartnotes-web
     env: docker
-    dockerfilePath: apps/web/Dockerfile
-    dockerContext: .
+    dockerfilePath: smartnotes/apps/web/Dockerfile
+    dockerContext: smartnotes
     region: ohio # USA (us-east-2)
     plan: free
     envVars:
