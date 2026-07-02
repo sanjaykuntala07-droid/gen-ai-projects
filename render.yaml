@@ -1,3 +1,4 @@
+# Render Blueprint for SmartNotes
 services:
   # ----------------------------------------------------------------------------
   # API Service (NestJS)
@@ -7,7 +8,7 @@ services:
     env: docker
     dockerfilePath: smartnotes/apps/api/Dockerfile
     dockerContext: smartnotes
-    region: ohio # USA (us-east-2)
+    region: ohio
     plan: free
     envVars:
       - key: NODE_ENV
@@ -24,8 +25,7 @@ services:
           name: smartnotes-redis
           property: connectionString
       - key: CORS_ORIGIN
-        sync: false # Set manually to smartnotes-web URL
-      # Auth0 credentials should be added manually in the Render Dashboard for security
+        sync: false
       - key: AUTH0_DOMAIN
         sync: false
       - key: AUTH0_CLIENT_ID
@@ -43,20 +43,19 @@ services:
     env: docker
     dockerfilePath: smartnotes/apps/web/Dockerfile
     dockerContext: smartnotes
-    region: ohio # USA (us-east-2)
+    region: ohio
     plan: free
     envVars:
       - key: VITE_API_URL
-        sync: false # Set manually to smartnotes-api URL
+        sync: false
 
   # ----------------------------------------------------------------------------
-  # Redis (for Reminders/Queues)
+  # Redis
   # ----------------------------------------------------------------------------
   - type: redis
     name: smartnotes-redis
     region: ohio
     plan: free
-    ipAllowList: [] # Only allow internal connections
 
 # ----------------------------------------------------------------------------
 # PostgreSQL Database
