@@ -13,7 +13,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 3000
+        value: "3000"
       - key: DATABASE_URL
         fromDatabase:
           name: smartnotes-db
@@ -24,10 +24,7 @@ services:
           name: smartnotes-redis
           property: connectionString
       - key: CORS_ORIGIN
-        fromService:
-          type: web
-          name: smartnotes-web
-          property: url
+        sync: false # Set manually to smartnotes-web URL
       # Auth0 credentials should be added manually in the Render Dashboard for security
       - key: AUTH0_DOMAIN
         sync: false
@@ -50,10 +47,7 @@ services:
     plan: free
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: smartnotes-api
-          property: url
+        sync: false # Set manually to smartnotes-api URL
 
   # ----------------------------------------------------------------------------
   # Redis (for Reminders/Queues)
