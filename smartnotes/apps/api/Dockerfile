@@ -9,15 +9,19 @@ COPY package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/web/package.json ./apps/web/
 COPY packages/shared/package.json ./packages/shared/
-RUN npm ci --include=dev
+RUN npm install
 
 # Stage 2: Build
 FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Build shared library first
+RUN cd packages/shared && npm run build
+# Generate Prisma Client
 RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
-RUN npx nx build api
+# Build API
+RUN cd apps/api && npm run build
 
 # Stage 3: Production
 FROM node:22-alpine AS runner
@@ -25,7 +29,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy built artifacts from the app's dist folder
+# Copy built artifacts
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/prisma ./prisma
 COPY --from=builder /app/node_modules ./node_modules

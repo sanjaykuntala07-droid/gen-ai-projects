@@ -9,15 +9,17 @@ COPY package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/web/package.json ./apps/web/
 COPY packages/shared/package.json ./packages/shared/
-RUN npm ci --include=dev
+RUN npm install
 
 # Stage 2: Build
 FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-# Run build directly with vite to skip potentially failing type checks in container
-RUN cd apps/web && npx vite build --emptyOutDir
+# Build shared library first
+RUN cd packages/shared && npm run build
+# Build web app
+RUN cd apps/web && npm run build
 
 # Stage 3: Serve with nginx
 FROM nginx:alpine AS runner
