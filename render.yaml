@@ -46,8 +46,7 @@ services:
     region: ohio
     plan: free
     dockerBuildArgs:
-      - name: VITE_API_URL
-        value: https://smartnotes-api.onrender.com/api # Direct URL
+      VITE_API_URL: https://smartnotes-api.onrender.com/api # Direct URL
     envVars:
       - key: VITE_API_URL
         value: https://smartnotes-api.onrender.com/api
