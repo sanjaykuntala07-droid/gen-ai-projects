@@ -56,6 +56,9 @@ services:
     name: smartnotes-redis
     region: ohio
     plan: free
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: "Allow all for setup - change to internal only later"
 
 # ----------------------------------------------------------------------------
 # PostgreSQL Database
