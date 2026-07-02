@@ -6,30 +6,30 @@
 /* CSS Custom Properties — Design Tokens */
 :root {
   /* Color Palette */
-  --color-bg-primary: hsl(222, 47%, 6%);
-  --color-bg-secondary: hsl(222, 40%, 9%);
-  --color-bg-tertiary: hsl(222, 35%, 12%);
-  --color-bg-elevated: hsl(222, 35%, 14%);
-  --color-bg-hover: hsl(222, 30%, 16%);
-  --color-bg-active: hsl(222, 28%, 18%);
+  --color-bg-primary: hsl(24, 15%, 7%);
+  --color-bg-secondary: hsl(24, 12%, 10%);
+  --color-bg-tertiary: hsl(24, 10%, 13%);
+  --color-bg-elevated: hsl(24, 10%, 15%);
+  --color-bg-hover: hsl(24, 8%, 18%);
+  --color-bg-active: hsl(24, 6%, 20%);
 
-  --color-surface: hsla(222, 40%, 14%, 0.6);
-  --color-surface-hover: hsla(222, 40%, 18%, 0.7);
-  --color-surface-glass: hsla(222, 40%, 16%, 0.4);
+  --color-surface: hsla(24, 12%, 15%, 0.6);
+  --color-surface-hover: hsla(24, 12%, 19%, 0.7);
+  --color-surface-glass: hsla(24, 12%, 17%, 0.4);
 
-  --color-border: hsla(222, 30%, 30%, 0.3);
-  --color-border-light: hsla(222, 30%, 35%, 0.2);
-  --color-border-focus: hsl(230, 80%, 65%);
+  --color-border: hsla(24, 10%, 30%, 0.3);
+  --color-border-light: hsla(24, 10%, 35%, 0.2);
+  --color-border-focus: hsl(28, 85%, 65%);
 
-  --color-text-primary: hsl(220, 20%, 95%);
-  --color-text-secondary: hsl(220, 15%, 65%);
-  --color-text-tertiary: hsl(220, 10%, 45%);
-  --color-text-muted: hsl(220, 10%, 35%);
+  --color-text-primary: hsl(30, 20%, 95%);
+  --color-text-secondary: hsl(30, 15%, 75%);
+  --color-text-tertiary: hsl(30, 10%, 55%);
+  --color-text-muted: hsl(30, 10%, 40%);
 
-  --color-accent: hsl(230, 80%, 65%);
-  --color-accent-hover: hsl(230, 80%, 72%);
-  --color-accent-soft: hsla(230, 80%, 65%, 0.15);
-  --color-accent-gradient: linear-gradient(135deg, hsl(230, 80%, 60%), hsl(260, 80%, 65%));
+  --color-accent: hsl(28, 85%, 65%);
+  --color-accent-hover: hsl(28, 85%, 72%);
+  --color-accent-soft: hsla(28, 85%, 65%, 0.15);
+  --color-accent-gradient: linear-gradient(135deg, hsl(28, 85%, 60%), hsl(10, 85%, 65%));
 
   --color-success: hsl(150, 60%, 50%);
   --color-success-soft: hsla(150, 60%, 50%, 0.15);
@@ -85,8 +85,8 @@
   --shadow-md: 0 4px 12px hsla(0, 0%, 0%, 0.25);
   --shadow-lg: 0 8px 30px hsla(0, 0%, 0%, 0.35);
   --shadow-xl: 0 16px 50px hsla(0, 0%, 0%, 0.45);
-  --shadow-glow: 0 0 20px hsla(230, 80%, 65%, 0.15);
-  --shadow-glow-strong: 0 0 40px hsla(230, 80%, 65%, 0.25);
+  --shadow-glow: 0 0 20px hsla(28, 85%, 65%, 0.15);
+  --shadow-glow-strong: 0 0 40px hsla(28, 85%, 65%, 0.25);
 
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -111,24 +111,24 @@
 
 /* Light Theme Override */
 [data-theme="light"] {
-  --color-bg-primary: hsl(220, 20%, 97%);
-  --color-bg-secondary: hsl(220, 15%, 94%);
-  --color-bg-tertiary: hsl(220, 15%, 91%);
+  --color-bg-primary: hsl(30, 30%, 97%);
+  --color-bg-secondary: hsl(30, 25%, 94%);
+  --color-bg-tertiary: hsl(30, 20%, 91%);
   --color-bg-elevated: hsl(0, 0%, 100%);
-  --color-bg-hover: hsl(220, 15%, 93%);
-  --color-bg-active: hsl(220, 15%, 90%);
+  --color-bg-hover: hsl(30, 20%, 93%);
+  --color-bg-active: hsl(30, 20%, 90%);
 
-  --color-surface: hsla(220, 20%, 98%, 0.8);
-  --color-surface-hover: hsla(220, 20%, 95%, 0.9);
-  --color-surface-glass: hsla(220, 20%, 100%, 0.6);
+  --color-surface: hsla(30, 30%, 98%, 0.8);
+  --color-surface-hover: hsla(30, 30%, 95%, 0.9);
+  --color-surface-glass: hsla(30, 30%, 100%, 0.6);
 
-  --color-border: hsla(220, 15%, 70%, 0.25);
-  --color-border-light: hsla(220, 15%, 80%, 0.2);
+  --color-border: hsla(30, 20%, 70%, 0.25);
+  --color-border-light: hsla(30, 20%, 80%, 0.2);
 
-  --color-text-primary: hsl(222, 47%, 11%);
-  --color-text-secondary: hsl(220, 15%, 40%);
-  --color-text-tertiary: hsl(220, 10%, 55%);
-  --color-text-muted: hsl(220, 10%, 70%);
+  --color-text-primary: hsl(24, 40%, 12%);
+  --color-text-secondary: hsl(24, 15%, 40%);
+  --color-text-tertiary: hsl(24, 10%, 55%);
+  --color-text-muted: hsl(24, 10%, 70%);
 
   --shadow-sm: 0 1px 2px hsla(0, 0%, 0%, 0.06);
   --shadow-md: 0 4px 12px hsla(0, 0%, 0%, 0.08);
@@ -1459,7 +1459,7 @@ input, textarea {
 .auth-bg-orb-1 {
   width: 500px;
   height: 500px;
-  background: hsl(230, 80%, 55%);
+  background: hsl(28, 85%, 55%);
   top: -15%;
   right: -10%;
   animation-delay: 0s;
@@ -1468,7 +1468,7 @@ input, textarea {
 .auth-bg-orb-2 {
   width: 400px;
   height: 400px;
-  background: hsl(280, 70%, 55%);
+  background: hsl(15, 80%, 55%);
   bottom: -10%;
   left: -10%;
   animation-delay: -4s;
@@ -1477,7 +1477,7 @@ input, textarea {
 .auth-bg-orb-3 {
   width: 300px;
   height: 300px;
-  background: hsl(340, 80%, 55%);
+  background: hsl(35, 90%, 55%);
   top: 40%;
   left: 50%;
   animation-delay: -8s;
@@ -2002,7 +2002,7 @@ input, textarea {
   gap: var(--space-2);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
-  background: linear-gradient(135deg, hsl(280, 80%, 65%), hsl(340, 80%, 60%));
+  background: linear-gradient(135deg, hsl(25, 90%, 65%), hsl(10, 90%, 60%));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -2010,7 +2010,7 @@ input, textarea {
 
 .ai-sparkle {
   -webkit-text-fill-color: initial;
-  color: hsl(280, 80%, 65%);
+  color: hsl(25, 90%, 65%);
   animation: pulse 2s ease-in-out infinite;
 }
 
@@ -2088,7 +2088,7 @@ input, textarea {
 
 .ai-spinner {
   animation: spin 1s linear infinite;
-  color: hsl(280, 80%, 65%);
+  color: hsl(25, 90%, 65%);
 }
 
 .ai-result {

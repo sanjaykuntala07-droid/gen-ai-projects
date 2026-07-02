@@ -1,0 +1,27 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  test:
+    name: Run CI Tests
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    name: Deploy to Render
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Trigger Render Deployment
+        # This uses Render's Deploy Hook. 
+        # You will need to add RENDER_DEPLOY_HOOK_API and RENDER_DEPLOY_HOOK_WEB to your GitHub Repo Secrets.
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_API }}
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_WEB }}
