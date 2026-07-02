@@ -22,8 +22,9 @@ async function bootstrap() {
   );
 
   // CORS configuration
+  const origin = configService.get<string>('CORS_ORIGIN', 'http://localhost:5173');
   app.enableCors({
-    origin: configService.get<string>('CORS_ORIGIN', 'http://localhost:5173'),
+    origin: [origin, /\.onrender\.com$/], // Allow your specific origin OR any render domain
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
   });

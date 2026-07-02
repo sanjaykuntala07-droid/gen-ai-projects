@@ -1,8 +1,11 @@
 const isCapacitor = (window as any).Capacitor !== undefined || window.location.protocol.startsWith('capacitor') || window.location.origin.includes('localhost') && !window.location.port;
 
-// Use the environment variable if provided, otherwise fallback to relative /api or local dev URL
-const envApiUrl = (import.meta as any).env?.VITE_API_URL;
-const API_BASE = envApiUrl || (isCapacitor ? 'http://192.168.1.126:3000/api' : '/api');
+// In production, we want to use the absolute URL provided by Render
+// We check window.location to see if we're on Render
+const isRender = window.location.hostname.includes('onrender.com');
+const RENDER_API_URL = 'https://smartnotes-api.onrender.com/api'; // We will use this as a fallback
+
+const API_BASE = isRender ? RENDER_API_URL : (isCapacitor ? 'http://192.168.1.126:3000/api' : '/api');
 
 async function request<T>(
   path: string,
